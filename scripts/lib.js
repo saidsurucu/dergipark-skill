@@ -74,11 +74,22 @@
   function parseIndexes(html) {
     const doc = parseDoc(html);
     const titles = [];
+    // Live-rendered case: index titles as <h5> elements.
     doc.querySelectorAll("h5.j-index-listing-index-title").forEach((h) => {
       const t = (h.textContent || "").trim();
       if (t) titles.push(t);
     });
-    return titles.join(", ");
+    // Raw server HTML case: index names live in the alt text of index logos
+    // (`/media/cache/journal_index_logo/...`), since the <h5> list is client-rendered.
+    if (titles.length === 0) {
+      doc.querySelectorAll("img").forEach((img) => {
+        if ((img.getAttribute("src") || "").includes("journal_index_logo")) {
+          const alt = (img.getAttribute("alt") || img.getAttribute("title") || "").trim();
+          if (alt) titles.push(alt);
+        }
+      });
+    }
+    return dedupe(titles).join(", ");
   }
 
   function looksLikeChallenge(html) {

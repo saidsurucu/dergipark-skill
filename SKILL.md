@@ -38,15 +38,16 @@ the orchestrator file, then call the orchestrator and return its result. If your
 
 ## Tool: pdf_to_html(pdf_id)
 1. Ensure the active tab is on `dergipark.org.tr` (navigate to
-   `https://dergipark.org.tr/tr/` if not — needed for same-origin fetch).
-2. Inject the vendored `scripts/pdfjs.min.js` (sets `window.pdfjsLib`). If the
-   worker is needed, set `window.__DP_PDF_WORKER` to a blob URL built from
-   `scripts/pdfjs.worker.min.js`. Then inject `scripts/pdf_extract.js` and call
-   `window.__DP_pdf("<pdf_id>")`.
-3. If it returns an error (e.g. CSP blocked pdf.js): **fallback** — `navigate`
-   to `https://dergipark.org.tr/tr/download/article-file/<pdf_id>`, wait briefly,
+   `https://dergipark.org.tr/tr/` if not — needed for same-origin PDF fetch).
+2. Inject `scripts/pdf_extract.js` and call `await window.__DP_pdf("<pdf_id>")`.
+   It self-loads pdf.js (DergiPark sends no CSP) and runs the worker from a blob.
+   For an offline/no-CDN run, inject the vendored `scripts/pdfjs.min.js` first
+   (sets `window.pdfjsLib`) and optionally set `window.__DP_PDF_WORKER` from
+   `scripts/pdfjs.worker.min.js`; the loader then skips the network fetch.
+3. If it returns an `error`: **fallback** — `navigate` to
+   `https://dergipark.org.tr/tr/download/article-file/<pdf_id>`, wait briefly,
    and use `get_page_text` (retry once). No OCR.
-4. Wrap the extracted text as simple HTML (title + link to the PDF + `<pre>`).
+4. Wrap the extracted `text` as simple HTML (title + link to the PDF + `<pre>`).
 
 ## Tool: get_article_references(article_url)
 1. Ensure a `dergipark.org.tr` tab (same-origin). Inject `scripts/lib.js` +

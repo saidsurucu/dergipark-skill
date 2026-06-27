@@ -30,9 +30,18 @@ test("parseArticleMeta maps fields, counts references, absolutizes pdf url", () 
   assert.equal(journal_base, "https://dergipark.org.tr/tr/pub/testdergisi");
 });
 
-test("parseIndexes joins titles", () => {
+test("parseIndexes joins titles from h5 (live-rendered)", () => {
   const html = `<h5 class="j-index-listing-index-title">TR Dizin</h5>
                 <h5 class="j-index-listing-index-title">Scopus</h5>`;
+  assert.equal(DP.parseIndexes(html), "TR Dizin, Scopus");
+});
+
+test("parseIndexes falls back to logo alt text and dedupes (raw server HTML)", () => {
+  const html = `
+    <img src="https://dergipark.org.tr/media/cache/journal_index_logo/a/b.jpg" alt="TR Dizin">
+    <img src="https://dergipark.org.tr/media/cache/journal_index_logo/c/d.jpg" alt="TR Dizin">
+    <img src="https://dergipark.org.tr/media/cache/journal_index_logo/e/f.jpg" alt="Scopus">
+    <img src="https://dergipark.org.tr/media/other/logo.png" alt="Not an index">`;
   assert.equal(DP.parseIndexes(html), "TR Dizin, Scopus");
 });
 
