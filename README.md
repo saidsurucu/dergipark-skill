@@ -18,12 +18,12 @@ Gelişmiş arama için DergiPark'a giriş yapmış olman gerekir.
 ### Seçenek A — Claude'a söyleyerek kur
 Claude'a şunu yaz:
 
-> `https://github.com/OWNER/REPO` reposunu `~/.claude/skills/dergipark` klasörüne
+> `https://github.com/saidsurucu/dergipark-skill` reposunu `~/.claude/skills/dergipark` klasörüne
 > klonla — DergiPark skill'ini kurmak istiyorum.
 
 ### Seçenek B — terminalden
 ```bash
-git clone https://github.com/OWNER/REPO ~/.claude/skills/dergipark
+git clone https://github.com/saidsurucu/dergipark-skill ~/.claude/skills/dergipark
 ```
 
 Skill `~/.claude/skills/dergipark/` altında olduğunda Claude onu otomatik keşfeder
