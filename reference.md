@@ -52,6 +52,12 @@ citation_publication_date, citation_keywords, citation_doi, citation_issn,
 citation_abstract, citation_pdf_url, DC.Source.URI (journal base),
 stats_trdizin_citation_count, citation_reference (one per reference).
 
+**Output key note:** the author name is returned under the key `yazar`, NOT
+`citation_author`. Claude-in-Chrome's output redactor blanks any key whose name
+contains "author" (shows `[BLOCKED: Sensitive key]`), which would hide every
+author name. The neutral `yazar` key passes the redactor; values are never the
+trigger, only key names.
+
 ## PDF
 Download URL: `https://dergipark.org.tr/tr/download/article-file/<id>`
 

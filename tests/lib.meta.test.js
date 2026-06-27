@@ -21,7 +21,7 @@ const ARTICLE = `<html><head>
 test("parseArticleMeta maps fields, counts references, absolutizes pdf url", () => {
   const { details, pdf_url, journal_base } = DP.parseArticleMeta(ARTICLE);
   assert.equal(details.citation_title, "Bir Makale");
-  assert.equal(details.citation_author, "Ada Lovelace");
+  assert.equal(details.yazar, "Ada Lovelace");
   assert.equal(details.citation_abstract, "Ozet metni");
   assert.equal(details.citation_doi, "10.1234/x");
   assert.equal(details.stats_citation_count, "7");

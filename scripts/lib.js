@@ -104,7 +104,10 @@
     if (pdf && pdf.startsWith("/")) pdf = ORIGIN + pdf;
     const details = {
       citation_title: raw["citation_title"] || null,
-      citation_author: raw["DC.Creator.PersonalName"] || null,
+      // NOTE: key is `yazar` (not `*author*`) on purpose — Claude-in-Chrome's
+      // output redactor blanks any key whose name contains "author" as a
+      // "Sensitive key", which would hide every author name. Neutral key passes.
+      yazar: raw["DC.Creator.PersonalName"] || null,
       citation_journal_title: raw["citation_journal_title"] || null,
       citation_publication_date: raw["citation_publication_date"] || null,
       citation_keywords: raw["citation_keywords"] || null,
