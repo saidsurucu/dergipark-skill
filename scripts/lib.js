@@ -41,5 +41,58 @@
     return out;
   }
 
-  return { ORIGIN, buildSearchUrl, passesIndexFilter, parseDoc, parseCards };
+  function metaMap(doc) {
+    const m = {};
+    doc.querySelectorAll("meta[name]").forEach((t) => {
+      const name = t.getAttribute("name");
+      if (name && !(name in m)) m[name] = (t.getAttribute("content") || "").trim();
+    });
+    return m;
+  }
+
+  function parseArticleMeta(html) {
+    const doc = parseDoc(html);
+    const raw = metaMap(doc);
+    const refCount = doc.querySelectorAll('meta[name="citation_reference"]').length;
+    let pdf = raw["citation_pdf_url"] || null;
+    if (pdf && pdf.startsWith("/")) pdf = ORIGIN + pdf;
+    const details = {
+      citation_title: raw["citation_title"] || null,
+      citation_author: raw["DC.Creator.PersonalName"] || null,
+      citation_journal_title: raw["citation_journal_title"] || null,
+      citation_publication_date: raw["citation_publication_date"] || null,
+      citation_keywords: raw["citation_keywords"] || null,
+      citation_doi: raw["citation_doi"] || null,
+      citation_issn: raw["citation_issn"] || null,
+      citation_abstract: raw["citation_abstract"] || "",
+      stats_citation_count: raw["stats_trdizin_citation_count"] || "0",
+      stats_reference_count: refCount,
+    };
+    return { details, pdf_url: pdf, journal_base: raw["DC.Source.URI"] || "" };
+  }
+
+  function parseIndexes(html) {
+    const doc = parseDoc(html);
+    const titles = [];
+    doc.querySelectorAll("h5.j-index-listing-index-title").forEach((h) => {
+      const t = (h.textContent || "").trim();
+      if (t) titles.push(t);
+    });
+    return titles.join(", ");
+  }
+
+  function looksLikeChallenge(html) {
+    const s = (html || "").toLowerCase();
+    return s.includes("just a moment") || s.includes('name="search_verification"') || s.includes("cf-turnstile");
+  }
+
+  function dedupe(arr) {
+    const seen = new Set();
+    const out = [];
+    (arr || []).forEach((x) => { if (!seen.has(x)) { seen.add(x); out.push(x); } });
+    return out;
+  }
+
+  return { ORIGIN, buildSearchUrl, passesIndexFilter, parseDoc, parseCards,
+           parseArticleMeta, parseIndexes, looksLikeChallenge, dedupe };
 });
