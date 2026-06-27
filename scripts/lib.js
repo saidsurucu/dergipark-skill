@@ -24,5 +24,22 @@
     return true;
   }
 
-  return { ORIGIN, buildSearchUrl, passesIndexFilter };
+  function parseDoc(html) {
+    return new DOMParser().parseFromString(html, "text/html");
+  }
+
+  function parseCards(html) {
+    const doc = parseDoc(html);
+    const out = [];
+    doc.querySelectorAll("div.card.article-card.dp-card-outline").forEach((card) => {
+      const a = card.querySelector("h5.card-title > a");
+      let href = a && a.getAttribute("href");
+      if (!href) return;
+      if (href.startsWith("/")) href = ORIGIN + href;
+      out.push({ url: href, title: (a.textContent || "N/A").trim() });
+    });
+    return out;
+  }
+
+  return { ORIGIN, buildSearchUrl, passesIndexFilter, parseDoc, parseCards };
 });
