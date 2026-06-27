@@ -7,7 +7,10 @@ const ROOT = path.join(__dirname, "..");
 const skill = fs.readFileSync(path.join(ROOT, "SKILL.md"), "utf8");
 
 test("SKILL.md has name + description frontmatter", () => {
-  assert.match(skill, /^---\n[\s\S]*\nname:\s*dergipark[\s\S]*\ndescription:\s*\S[\s\S]*\n---/);
+  const m = skill.match(/^---\n([\s\S]*?)\n---/);
+  assert.ok(m, "frontmatter block present");
+  assert.match(m[1], /(^|\n)name:\s*dergipark(\n|$)/);
+  assert.match(m[1], /(^|\n)description:\s*\S/);
 });
 
 test("SKILL.md references every script and reference.md", () => {
