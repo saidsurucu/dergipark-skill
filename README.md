@@ -15,20 +15,10 @@ edilerek yapılır. Senin gerçek tarayıcın ve IP'n kullanıldığı için **C
 **Gereksinimler:** Claude (Claude in Chrome özelliği aktif) + Chrome eklentisi.
 Gelişmiş arama için DergiPark'a giriş yapmış olman gerekir.
 
-### Seçenek A — Claude'a söyleyerek kur
 Claude'a şunu yaz:
 
 > `https://github.com/saidsurucu/dergipark-skill` reposunu `~/.claude/skills/dergipark` klasörüne
 > klonla — DergiPark skill'ini kurmak istiyorum.
-
-### Seçenek B — terminalden
-```bash
-git clone https://github.com/saidsurucu/dergipark-skill ~/.claude/skills/dergipark
-```
-
-Skill `~/.claude/skills/dergipark/` altında olduğunda Claude onu otomatik keşfeder
-(yeni bir oturumda `dergipark` skill'i listelenir). Manuel bir yapılandırma
-gerekmez.
 
 ## Ne yapabilir
 
