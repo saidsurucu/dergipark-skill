@@ -17,8 +17,7 @@ Gelişmiş arama için DergiPark'a giriş yapmış olman gerekir.
 
 Claude'a şunu yaz:
 
-> `https://github.com/saidsurucu/dergipark-skill` reposunu `~/.claude/skills/dergipark` klasörüne
-> klonla — DergiPark skill'ini kurmak istiyorum.
+> Bu skill'i kurmak istiyorum: `https://github.com/saidsurucu/dergipark-skill`
 
 ## Ne yapabilir
 
