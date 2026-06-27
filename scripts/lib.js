@@ -111,6 +111,18 @@
     return results;
   }
 
+  function parseReferences(html) {
+    const doc = parseDoc(html);
+    const refs = [];
+    doc.querySelectorAll('meta[name="citation_reference"]').forEach((t) => {
+      const c = (t.getAttribute("content") || "").trim();
+      if (c) refs.push(c);
+    });
+    const titleTag = doc.querySelector('meta[name="citation_title"]');
+    const title = titleTag ? (titleTag.getAttribute("content") || "").trim() : null;
+    return { title, reference_count: refs.length, references: refs };
+  }
+
   return { ORIGIN, buildSearchUrl, passesIndexFilter, parseDoc, parseCards,
-           parseArticleMeta, parseIndexes, looksLikeChallenge, dedupe, mapPool };
+           parseArticleMeta, parseIndexes, looksLikeChallenge, dedupe, mapPool, parseReferences };
 });
