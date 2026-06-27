@@ -14,11 +14,13 @@ test("SKILL.md has name + description frontmatter", () => {
 });
 
 test("SKILL.md references every script and reference.md", () => {
-  ["scripts/lib.js", "scripts/search.js", "scripts/references.js", "scripts/pdf_extract.js", "reference.md"]
+  ["scripts/lib.js", "scripts/scrape.js", "scripts/search.js", "scripts/advanced_search.js",
+   "scripts/references.js", "scripts/pdf_extract.js", "reference.md"]
     .forEach((f) => assert.ok(skill.includes(f), `SKILL.md should mention ${f}`));
 });
 
 test("all referenced script files exist", () => {
-  ["scripts/lib.js", "scripts/search.js", "scripts/references.js", "scripts/pdf_extract.js"]
+  ["scripts/lib.js", "scripts/scrape.js", "scripts/search.js", "scripts/advanced_search.js",
+   "scripts/references.js", "scripts/pdf_extract.js"]
     .forEach((f) => assert.ok(fs.existsSync(path.join(ROOT, f)), `${f} must exist`));
 });

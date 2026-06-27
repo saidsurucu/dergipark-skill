@@ -17,6 +17,52 @@
     return ORIGIN + "/tr/search?" + parts.join("&");
   }
 
+  // Advanced search field aliases -> DergiPark q-operator prefixes (discovered live).
+  const ADV_FIELDS = {
+    title: "title", short_title: "running_title", running_title: "running_title",
+    journal: "journal_title", journal_title: "journal_title",
+    issn: "issn", eissn: "eissn",
+    abstract: "abstract", keywords: "keywords",
+    doi: "doi", doi_url: "doi_url", doi_prefix: "crossref_prefix", crossref_prefix: "crossref_prefix",
+    author: "author", orcid: "author_orcid", author_orcid: "author_orcid",
+    institution: "institution", translator: "translator",
+    year: "year", citation: "citation", publisher: "publisher",
+  };
+
+  function normOp(op) {
+    const s = String(op == null ? "AND" : op).trim().toLowerCase();
+    if (s === "or" || s === "veya" || s === "1") return "OR";
+    if (s === "not" || s === "içermesin" || s === "icermesin" || s === "2") return "NOT";
+    return "AND";
+  }
+
+  function buildAdvancedQuery(criteria, opts) {
+    opts = opts || {};
+    const parts = [];
+    (criteria || []).forEach((c, i) => {
+      if (!c || !c.term) return;
+      const prefix = ADV_FIELDS[c.field] || c.field;
+      const frag = prefix + ":(" + c.term + ")";
+      parts.push(parts.length === 0 ? frag : normOp(c.op) + " " + frag);
+    });
+    let q = parts.join(" ");
+    const fy = opts.firstYear, ly = opts.lastYear;
+    if (fy || ly) {
+      const range = "year:[" + (fy || "*") + " TO " + (ly || "*") + "]";
+      q = q ? q + " AND " + range : range;
+    }
+    return q;
+  }
+
+  function buildAdvancedUrl(criteria, opts) {
+    opts = opts || {};
+    const q = buildAdvancedQuery(criteria, opts);
+    const parts = ["q=" + encodeURIComponent(q), "section=article", "advanced=1"];
+    if (opts.page && Number(opts.page) > 1) parts.push("page=" + encodeURIComponent(opts.page));
+    if (opts.sort) parts.push("sortBy=" + encodeURIComponent(opts.sort));
+    return ORIGIN + "/tr/search?" + parts.join("&");
+  }
+
   function passesIndexFilter(indicesStr, filter) {
     indicesStr = indicesStr || "";
     if (filter === "tr_dizin_icerenler") return indicesStr.includes("TR Dizin");
@@ -134,6 +180,7 @@
     return { title, reference_count: refs.length, references: refs };
   }
 
-  return { ORIGIN, buildSearchUrl, passesIndexFilter, parseDoc, parseCards,
+  return { ORIGIN, buildSearchUrl, buildAdvancedQuery, buildAdvancedUrl, ADV_FIELDS,
+           passesIndexFilter, parseDoc, parseCards,
            parseArticleMeta, parseIndexes, looksLikeChallenge, dedupe, mapPool, parseReferences };
 });

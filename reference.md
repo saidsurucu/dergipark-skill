@@ -13,6 +13,29 @@ Params:
 ## article_type codes
 54 Research Article · 55 Case Report · 56 Review · 58 Conference Paper · 65 Book Review · 10 Review Article
 
+## Advanced search (login-gated)
+DergiPark's advanced search form just builds a `q`-string with field operators and
+redirects to `/tr/search?q=<built>&section=article&advanced=1`, which returns
+**server-rendered** cards. Build the q directly and in-page `fetch` it — no form,
+CSRF token, or navigation needed. Requires the user to be logged in.
+
+Field aliases → q prefix:
+| alias | prefix | alias | prefix |
+|-------|--------|-------|--------|
+| title | `title:` | doi_prefix | `crossref_prefix:` |
+| short_title | `running_title:` | author | `author:` |
+| journal | `journal_title:` | orcid | `author_orcid:` |
+| issn | `issn:` | institution | `institution:` |
+| eissn | `eissn:` | translator | `translator:` |
+| abstract | `abstract:` | year | `year:` |
+| keywords | `keywords:` | citation | `citation:` |
+| doi | `doi:` | publisher | `publisher:` |
+| doi_url | `doi_url:` | | |
+
+Syntax: `prefix:(term)` joined by `AND` | `OR` | `NOT`. Year range appends
+` AND year:[<first> TO <last>]` with `*` for an open end (e.g. `year:[2015 TO *]`).
+Example: `title:(A) OR abstract:(B) NOT author:(C) AND year:[2020 TO 2022]`.
+
 ## index_filter
 - `tr_dizin_icerenler` — keep only articles whose journal indexes include "TR Dizin"
 - `bos_olmayanlar` — keep articles whose journal has any index
