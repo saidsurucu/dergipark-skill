@@ -93,6 +93,24 @@
     return out;
   }
 
+  async function mapPool(items, limit, fn) {
+    const results = new Array(items.length);
+    let next = 0;
+    async function worker() {
+      while (next < items.length) {
+        const i = next++;
+        try {
+          results[i] = { status: "fulfilled", value: await fn(items[i], i) };
+        } catch (e) {
+          results[i] = { status: "rejected", reason: e };
+        }
+      }
+    }
+    const n = Math.max(1, Math.min(limit, items.length));
+    await Promise.all(Array.from({ length: n }, worker));
+    return results;
+  }
+
   return { ORIGIN, buildSearchUrl, passesIndexFilter, parseDoc, parseCards,
-           parseArticleMeta, parseIndexes, looksLikeChallenge, dedupe };
+           parseArticleMeta, parseIndexes, looksLikeChallenge, dedupe, mapPool };
 });
